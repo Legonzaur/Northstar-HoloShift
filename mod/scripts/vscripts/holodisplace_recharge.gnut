@@ -1,0 +1,58 @@
+global function HoloDisplace_Init
+
+void function HoloDisplace_Init() {
+    #if SERVER
+        AddCallback_GameStateEnter( eGameState.Playing, HoloRecharge )
+    #endif
+}
+
+
+int rechargeStep = 1 //defines speed at which counter is added or removed
+float rechargeInterval = 1/20
+int charge_size = 100
+int charge_max = 200
+int recharge_remove = 1
+
+#if SERVER
+    void function HoloRecharge(){
+        thread HoloRecharge_Threaded()
+    }
+
+    void function HoloRecharge_Threaded(){
+        while(true){
+            array<entity> players = GetPlayerArray()
+            foreach (entity player in players)
+            {
+                if ( IsValid(player) && IsAlive( player ))
+                {
+                    Assert(player)
+                    if(!player.IsPhaseShifted()){
+                        int chargeCount = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()
+                        int oldchargeCount = chargeCount
+                        if(player in playerDecoyList){
+                            chargeCount -= recharge_remove
+                            if(chargeCount < 0)
+                                chargeCount = 0
+                        }else{
+                            int max = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCountMax()
+                            chargeCount += rechargeStep
+                            if(chargeCount > charge_size){
+                                chargeCount = max
+                            }
+                        }
+                        if(oldchargeCount != chargeCount){
+                            player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(chargeCount)
+                        }
+                    }
+
+
+
+                }
+            }
+            wait rechargeInterval
+        }
+
+    }
+
+
+#endif
