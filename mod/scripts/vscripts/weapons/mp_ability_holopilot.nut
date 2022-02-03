@@ -398,7 +398,6 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	player.EndSignal( "OnDeath" )
 	decoy.EndSignal("OnDestroy")
 	decoy.EndSignal("OnDeath")
-	decoy.EndSignal("OnHoloPilotDestroyed")
 	entity mover = CreateScriptMover( player.GetOrigin(), player.GetAngles() )
 	player.SetParent( mover, "REF" )
 
