@@ -25,25 +25,28 @@ int recharge_remove = 1
             {
                 if ( IsValid(player) && IsAlive( player ))
                 {
-                    Assert(player)
-                    if(!player.IsPhaseShifted()){
-                        int chargeCount = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()
-                        int oldchargeCount = chargeCount
-                        if(player in playerDecoyList){
-                            chargeCount -= recharge_remove
-                            if(chargeCount < 0)
-                                chargeCount = 0
-                        }else{
-                            int max = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCountMax()
-                            chargeCount += rechargeStep
-                            if(chargeCount > charge_size){
-                                chargeCount = max
+                    if(player.GetOffhandWeapon(1).GetWeaponClassName() == "mp_ability_holopilot"){
+                        Assert(player)
+                        if(!player.IsPhaseShifted()){
+                            int chargeCount = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()
+                            int oldchargeCount = chargeCount
+                            if(player in playerDecoyList){
+                                chargeCount -= recharge_remove
+                                if(chargeCount < 0)
+                                    chargeCount = 0
+                            }else{
+                                int max = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCountMax()
+                                chargeCount += rechargeStep
+                                if(chargeCount > charge_size){
+                                    chargeCount = max
+                                }
+                            }
+                            if(oldchargeCount != chargeCount){
+                                player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(chargeCount)
                             }
                         }
-                        if(oldchargeCount != chargeCount){
-                            player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(chargeCount)
-                        }
                     }
+
 
 
 

@@ -376,9 +376,11 @@ bool function PlayerCanUseDecoy( entity ownerPlayer ) //For holopilot and HoloPi
 			return false
 	}
 
-	if(ownerPlayer.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()<100)
+	if(ownerPlayer.GetOffhandWeapon(1).GetWeaponClassName() == "mp_ability_holopilot" && ownerPlayer.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()<100)
 		return false
 
+	if(ownerPlayer.GetOffhandWeapon(1).GetWeaponClassName() == "mp_ability_holopilot" && ownerPlayer.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()<200 && !(ownerPlayer in playerDecoyList))
+		return false
 	//Do we need to check isPhaseShifted here? Re-examine when it's possible to get both Phase and Decoy (maybe through burn cards?)
 
 	return true
