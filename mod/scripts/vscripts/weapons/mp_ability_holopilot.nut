@@ -396,7 +396,7 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 {
 	player.EndSignal( "OnDestroy" )
 	player.EndSignal( "OnDeath" )
-
+	decoy.EndSignal("OnDestroy")
 	entity mover = CreateScriptMover( player.GetOrigin(), player.GetAngles() )
 	player.SetParent( mover, "REF" )
 
@@ -428,7 +428,7 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	{
 		initial_origin -= (initial_origin-decoy.GetOrigin())*(1/i)
 		initial_angle -= (initial_angle-decoy.GetAngles())*(1/i)
-
+		if(!IsAlive(decoy))
 		mover.NonPhysicsMoveTo( initial_origin, PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 		mover.NonPhysicsRotateTo( initial_angle, PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 		wait PHASE_REWIND_PATH_SNAPSHOT_INTERVAL
