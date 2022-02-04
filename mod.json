@@ -7,9 +7,6 @@
     {
       "Path": "holodisplace_recharge.gnut",
       "RunOn": "MP",
-      "ClientCallback": {
-        "After": "HoloDisplace_Init"
-      },
       "ServerCallback": {
         "After": "HoloDisplace_Init"
       }
