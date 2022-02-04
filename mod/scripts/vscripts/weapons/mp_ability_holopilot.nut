@@ -170,9 +170,10 @@ entity function CreateHoloPilotDecoys( entity player, int numberOfDecoysToMake =
 	if ( setOriginAndAngles )
 		stickPercentToRun = 0.0
 
+	entity decoy
 	for( int i = 0; i < numberOfDecoysToMake; ++i )
 	{
-		entity decoy = player.CreatePlayerDecoy( stickPercentToRun )
+		decoy = player.CreatePlayerDecoy( stickPercentToRun )
 		decoy.SetMaxHealth( 50 )
 		decoy.SetHealth( 50 )
 		decoy.EnableAttackableByAI( 50, 0, AI_AP_FLAG_NONE )
@@ -197,9 +198,11 @@ entity function CreateHoloPilotDecoys( entity player, int numberOfDecoysToMake =
 		#if MP
 					thread MonitorDecoyActiveForPlayer( decoy, player )
 			#endif
-		return decoy
 	}
 
+	if(numberOfDecoysToMake == 1){
+			return decoy
+	}
 	#if BATTLECHATTER_ENABLED
 		PlayBattleChatterLine( player, "bc_pHolo" )
 	#endif
