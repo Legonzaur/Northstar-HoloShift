@@ -131,6 +131,9 @@ var function OnWeaponPrimaryAttack_holopilot( entity weapon, WeaponPrimaryAttack
 	if ( weaponOwner in playerDecoyList ){
 		CreateHoloPilotDecoys( weaponOwner, 1 )
 		entity decoy = playerDecoyList[ weaponOwner ]
+		if(weaponOwner.GetOffhandWeapon(1).GetWeaponClassName() == "mp_ability_holopilot"){
+			weaponOwner.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(0)
+		}
 		PlayerUsesHoloRewind(weaponOwner, decoy)
 		// print("teleporting to"+decoy)
 		// print("Origin"+decoy.GetOrigin())
@@ -413,7 +416,6 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 		ViewConeFree( player )
 		mover.Destroy()
 		CleanupExistingDecoy(decoy)
-		player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(0)
 	})
 
 	vector initial_origin = player.GetOrigin()
