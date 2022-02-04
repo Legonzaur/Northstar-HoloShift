@@ -428,9 +428,9 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	ViewConeZero( player )
 	player.HolsterWeapon()
 	player.SetPredictionEnabled( false )
-	PhaseShift( player, 0.0, 10 * PHASE_REWIND_PATH_SNAPSHOT_INTERVAL * 1.5 )
+	PhaseShift( player, 0.0, 7 * PHASE_REWIND_PATH_SNAPSHOT_INTERVAL * 1.5 )
 
-	for ( float i = 10; i > 0; i-- )
+	for ( float i = 7; i > 0; i-- )
 	{
 		initial_origin -= (initial_origin-decoy.GetOrigin())*(1/i)
 		initial_angle -= (initial_angle-decoy.GetAngles())*(1/i)
