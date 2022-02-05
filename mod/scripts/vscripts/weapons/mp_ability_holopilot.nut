@@ -271,7 +271,7 @@ void function SetupDecoy_Common( entity player, entity decoy ) //functioned out 
 				if(GetCurrentPlaylistName() == "lts"){
 					if(player in playerDecoyList){
 						thread Decoy_BatteryFX( decoy, decoyChildEnt )
-					}<
+					}
 				}else{
 					thread Decoy_BatteryFX( decoy, decoyChildEnt )
 				}
