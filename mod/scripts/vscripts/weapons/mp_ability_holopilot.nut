@@ -457,37 +457,4 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	mover.NonPhysicsRotateTo( decoy.GetAngles(), PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 	player.SetVelocity( decoy.GetVelocity() )
 }
-
-void function Rodeo_ApplyBatteryDelayed( entity player, table<string,bool> e )
-{
-	entity battery = Rodeo_TakeBatteryAwayFromPilot( player )
-	e[ "hadAmped" ] = e[ "hadAmped" ] || IsAmpedBattery( battery )
-	int skin = battery.GetSkin()
-	battery.Destroy()
-
-	entity dummyBattery = CreatePropDynamic( RODEO_BATTERY_MODEL_FOR_RODEO_ANIMS )
-	dummyBattery.SetSkin( skin )
-	dummyBattery.Hide()
-
-	entity soul = player.GetTitanSoul()
-
-	OnThreadEnd(
-		function() : ( dummyBattery ) {
-			if ( IsValid( dummyBattery ) )
-				dummyBattery.Destroy()
-		}
-	)
-
-	if ( !IsValid( soul ) )
-		return
-
-	dummyBattery.EndSignal( "OnDestroy" )
-	soul.EndSignal( "OnDestroy" )
-	soul.EndSignal( "OnTitanDeath" )
-
-	wait 0.4 // delay so that it applies the battery when the player is inside the titan, so he can see the health bar change
-
-	if ( IsValid( soul.GetTitan() ) )
-		Rodeo_ApplyBatteryToTitan( dummyBattery, soul.GetTitan() )
-}
 #endif
