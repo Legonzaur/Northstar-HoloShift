@@ -392,7 +392,7 @@ bool function PlayerCanUseDecoy( entity ownerPlayer ) //For holopilot and HoloPi
 		return false
 	return true
 }
-
+#if SERVER
 void function PlayerUsesHoloRewind( entity player, entity decoy )
 {
 	thread PlayerUsesHoloRewindThreaded( player, decoy )
@@ -443,3 +443,4 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	mover.NonPhysicsRotateTo( decoy.GetAngles(), PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 	player.SetVelocity( decoy.GetVelocity() )
 }
+#endif
