@@ -260,6 +260,13 @@ void function SetupDecoy_Common( entity player, entity decoy ) //functioned out 
 			}
 		}
 
+		if(GetCurrentPlaylistName() == "lts"){
+					if(!(player in playerDecoyList)){
+						if(isBattery)
+							createHologram = false;
+					}
+		}
+
 		asset modelName = childEnt.GetModelName()
 		if ( createHologram && modelName != $"" && childEnt.GetParentAttachment() != "" )
 		{
@@ -268,17 +275,10 @@ void function SetupDecoy_Common( entity player, entity decoy ) //functioned out 
 			decoyChildEnt.SetParent( decoy, childEnt.GetParentAttachment() )
 
 			if ( isBattery ){
-				if(GetCurrentPlaylistName() == "lts"){
-					if(player in playerDecoyList){
-						thread Decoy_BatteryFX( decoy, decoyChildEnt )
-					}
-				}else{
-					thread Decoy_BatteryFX( decoy, decoyChildEnt )
-				}
-			}
-
-			else
+				thread Decoy_BatteryFX( decoy, decoyChildEnt )
+			}else{
 				thread Decoy_FlagFX( decoy, decoyChildEnt )
+			}
 		}
 
 		childEnt = childEnt.NextMovePeer()
