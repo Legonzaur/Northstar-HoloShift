@@ -1,4 +1,4 @@
-# Legonzaur.HoloDisplace
+# Legonzaur.HoloShift
 
 Mod for Northstar, a Titanfall2 modification
 
