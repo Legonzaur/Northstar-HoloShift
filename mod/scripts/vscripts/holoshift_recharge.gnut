@@ -1,6 +1,6 @@
-global function HoloDisplace_Init
+global function HoloShift_Init
 
-void function HoloDisplace_Init() {
+void function HoloShift_Init() {
     #if SERVER
         AddCallback_GameStateEnter( eGameState.Playing, HoloRecharge )
     #endif

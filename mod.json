@@ -1,14 +1,14 @@
 {
-  "Name": "Legonzaur.HoloDisplace",
+  "Name": "Legonzaur.HoloShift",
   "Description": "Swap positions with your beloved decoy",
   "Version": "0.2",
   "LoadPriority": 2,
   "Scripts": [
     {
-      "Path": "holodisplace_recharge.gnut",
+      "Path": "holoshift_recharge.gnut",
       "RunOn": "MP",
       "ServerCallback": {
-        "After": "HoloDisplace_Init"
+        "After": "HoloShift_Init"
       }
     }
   ]
