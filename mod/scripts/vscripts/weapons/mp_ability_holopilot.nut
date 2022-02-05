@@ -135,6 +135,12 @@ var function OnWeaponPrimaryAttack_holopilot( entity weapon, WeaponPrimaryAttack
 			weaponOwner.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(0)
 		}
 		PlayerUsesHoloRewind(weaponOwner, decoy)
+		if(GetCurrentPlaylistName() == "lts"){
+			if(PlayerHasBattery(weaponOwner)){
+				Rodeo_TakeBatteryAwayFromPilot(weaponOwner)
+			}
+		}
+
 		// print("teleporting to"+decoy)
 		// print("Origin"+decoy.GetOrigin())
 		// print("Angles"+decoy.GetAngles())
@@ -261,8 +267,16 @@ void function SetupDecoy_Common( entity player, entity decoy ) //functioned out 
 			decoyChildEnt.Highlight_SetInheritHighlight( true )
 			decoyChildEnt.SetParent( decoy, childEnt.GetParentAttachment() )
 
-			if ( isBattery )
-				thread Decoy_BatteryFX( decoy, decoyChildEnt )
+			if ( isBattery ){
+				if(GetCurrentPlaylistName() == "lts"){
+					if(player in playerDecoyList){
+						thread Decoy_BatteryFX( decoy, decoyChildEnt )
+					}<
+				}else{
+					thread Decoy_BatteryFX( decoy, decoyChildEnt )
+				}
+			}
+
 			else
 				thread Decoy_FlagFX( decoy, decoyChildEnt )
 		}
@@ -442,5 +456,38 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	mover.NonPhysicsMoveTo( decoy.GetOrigin(), PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 	mover.NonPhysicsRotateTo( decoy.GetAngles(), PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 	player.SetVelocity( decoy.GetVelocity() )
+}
+
+void function Rodeo_ApplyBatteryDelayed( entity player, table<string,bool> e )
+{
+	entity battery = Rodeo_TakeBatteryAwayFromPilot( player )
+	e[ "hadAmped" ] = e[ "hadAmped" ] || IsAmpedBattery( battery )
+	int skin = battery.GetSkin()
+	battery.Destroy()
+
+	entity dummyBattery = CreatePropDynamic( RODEO_BATTERY_MODEL_FOR_RODEO_ANIMS )
+	dummyBattery.SetSkin( skin )
+	dummyBattery.Hide()
+
+	entity soul = player.GetTitanSoul()
+
+	OnThreadEnd(
+		function() : ( dummyBattery ) {
+			if ( IsValid( dummyBattery ) )
+				dummyBattery.Destroy()
+		}
+	)
+
+	if ( !IsValid( soul ) )
+		return
+
+	dummyBattery.EndSignal( "OnDestroy" )
+	soul.EndSignal( "OnDestroy" )
+	soul.EndSignal( "OnTitanDeath" )
+
+	wait 0.4 // delay so that it applies the battery when the player is inside the titan, so he can see the health bar change
+
+	if ( IsValid( soul.GetTitan() ) )
+		Rodeo_ApplyBatteryToTitan( dummyBattery, soul.GetTitan() )
 }
 #endif
