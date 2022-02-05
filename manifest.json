@@ -1,7 +1,7 @@
 {
-    "name": "Legonzaur.HoloShift",
-    "version_number": "0.2",
-    "website_url": "https://github.com/Legonzaur/Legonzaur.HoloShift",
-    "description": "Swap positions with your beloved decoy",
-    "dependencies": []
+  "name": "Legonzaur.HoloShift",
+  "version_number": "0.3",
+  "website_url": "https://github.com/Legonzaur/Legonzaur.HoloShift",
+  "description": "Swap positions with your beloved decoy",
+  "dependencies": []
 }
