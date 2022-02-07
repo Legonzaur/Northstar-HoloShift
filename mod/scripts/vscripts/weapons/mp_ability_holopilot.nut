@@ -157,7 +157,7 @@ var function OnWeaponPrimaryAttack_holopilot( entity weapon, WeaponPrimaryAttack
 #endif
 
 	PlayerUsedOffhand( weaponOwner, weapon )
-
+	return 0
 	return weapon.GetWeaponSettingInt( eWeaponVar.ammo_min_to_fire )
 }
 
