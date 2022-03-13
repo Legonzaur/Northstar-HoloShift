@@ -30,7 +30,7 @@ struct
 file
 
 global table< entity > playerDecoyList //CUSTOM used to track the decoy the user will be teleported to
-
+global table< entity, float > playerDecoyActiveFrom //CUSTOM used to set decoy ability discharge
 
 
 #if SERVER
@@ -86,6 +86,10 @@ void function OnHoloPilotDestroyed( entity decoy )
 		if(bossPlayer in playerDecoyList){
 			if(decoy == playerDecoyList[bossPlayer])
 				delete playerDecoyList[bossPlayer]
+
+		}
+		if(bossPlayer in playerDecoyActiveFrom){
+			delete playerDecoyActiveFrom[bossPlayer]
 		}
 		EmitSoundOnEntityOnlyToPlayer( bossPlayer, bossPlayer, "holopilot_end_1P" )
 	}
@@ -135,6 +139,9 @@ var function OnWeaponPrimaryAttack_holopilot( entity weapon, WeaponPrimaryAttack
 			weaponOwner.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(0)
 		}
 		PlayerUsesHoloRewind(weaponOwner, decoy)
+		if(weaponOwner in playerDecoyActiveFrom){
+			delete playerDecoyActiveFrom[weaponOwner]
+		}
 		if(GetCurrentPlaylistName() == "lts"){
 			if(PlayerHasBattery(weaponOwner)){
 				Rodeo_TakeBatteryAwayFromPilot(weaponOwner)
@@ -185,7 +192,7 @@ entity function CreateHoloPilotDecoys( entity player, int numberOfDecoysToMake =
 		decoy.EnableAttackableByAI( 50, 0, AI_AP_FLAG_NONE )
 		SetObjectCanBeMeleed( decoy, true )
 		decoy.SetTimeout( DECOY_DURATION )
-
+		playerDecoyActiveFrom[player] <- Time()
 		if ( setOriginAndAngles )
 		{
 			vector angleToAdd = CalculateAngleSegmentForDecoy( i, HOLOPILOT_ANGLE_SEGMENT )

@@ -1,7 +1,7 @@
 {
   "Name": "Legonzaur.HoloShift",
   "Description": "Swap positions with your beloved decoy",
-  "Version": "1.0.4",
+  "Version": "1.0.6",
   "LoadPriority": 2,
   "Scripts": [
     {

@@ -7,18 +7,21 @@ void function HoloShift_Init() {
 }
 
 
-int rechargeStep = 1 //defines speed at which counter is added or removed
-float rechargeInterval = 1/20
 int charge_size = 100
-int charge_max = 200
-int recharge_remove = 1
+
+bool IsLaunched = false
 
 #if SERVER
     void function HoloRecharge(){
-        thread HoloRecharge_Threaded()
+        if(!IsLaunched) {
+            thread HoloRecharge_Threaded()
+            IsLaunched = true
+        }
+
     }
 
     void function HoloRecharge_Threaded(){
+        float rechargeMultiplier = charge_size/DECOY_DURATION
         while(true){
             array<entity> players = GetPlayerArray()
             foreach (entity player in players)
@@ -28,34 +31,16 @@ int recharge_remove = 1
                     if( IsValid(player.GetOffhandWeapon(1)) && player.GetOffhandWeapon(1).GetWeaponClassName() == "mp_ability_holopilot"){
                         Assert(player)
                         if(!player.IsPhaseShifted()){
-                            int chargeCount = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCount()
-                            int oldchargeCount = chargeCount
-                            if(player in playerDecoyList){
-                                chargeCount -= recharge_remove
-                                if(chargeCount < 0)
-                                    chargeCount = 0
-                            }else{
-                                int max = player.GetOffhandWeapon(1).GetWeaponPrimaryClipCountMax()
-                                chargeCount += rechargeStep
-                                if(chargeCount > charge_size){
-                                    chargeCount = max
-                                }
-                            }
-                            if(oldchargeCount != chargeCount){
-                                player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(chargeCount)
+                            if(player in playerDecoyActiveFrom){
+                                print("test")
+                                float chargeCount = float(player.GetOffhandWeapon(1).GetWeaponPrimaryClipCountMax()) - ((Time() - playerDecoyActiveFrom[player])*rechargeMultiplier)
+                                player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(int(chargeCount))
                             }
                         }
                     }
-
-
-
-
                 }
             }
-            wait rechargeInterval
+            wait 0
         }
-
     }
-
-
 #endif
