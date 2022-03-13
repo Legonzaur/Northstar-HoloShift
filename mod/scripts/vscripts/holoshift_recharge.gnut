@@ -32,7 +32,6 @@ bool IsLaunched = false
                         Assert(player)
                         if(!player.IsPhaseShifted()){
                             if(player in playerDecoyActiveFrom){
-                                print("test")
                                 float chargeCount = float(player.GetOffhandWeapon(1).GetWeaponPrimaryClipCountMax()) - ((Time() - playerDecoyActiveFrom[player])*rechargeMultiplier)
                                 player.GetOffhandWeapon(1).SetWeaponPrimaryClipCount(int(chargeCount))
                             }
