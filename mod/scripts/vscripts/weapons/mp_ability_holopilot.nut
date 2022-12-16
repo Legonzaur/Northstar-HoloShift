@@ -428,18 +428,36 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	entity mover = CreateScriptMover( player.GetOrigin(), player.GetAngles() )
 	player.SetParent( mover, "REF" )
 
-	OnThreadEnd( function() : ( player, mover, decoy )
+	table decoyData = {}
+	decoyData.forceCrouch <- TraceLine
+							 ( decoy.GetOrigin(), 
+							   decoy.GetOrigin() + < 0,0,80 >, // 40 is crouched pilot height! add additional 40 for better check
+							   [ decoy ], 
+							   TRACE_MASK_SHOT, 
+							   TRACE_COLLISION_GROUP_NONE 
+							 ).hitEnt != null // decoy will stuck, need to forceCrouch player
+
+	OnThreadEnd( function() : ( player, mover, decoy, decoyData )
 	{
-		player.SetOrigin(decoy.GetOrigin())
-		player.SetAngles(decoy.GetAngles())
-		player.SetVelocity(decoy.GetVelocity())
-		CancelPhaseShift( player )
-		player.DeployWeapon()
-		player.SetPredictionEnabled( true )
-		player.ClearParent()
-		ViewConeFree( player )
-		mover.Destroy()
-		CleanupExistingDecoy(decoy)
+		if ( IsValid( player ) )
+		{
+			player.SetOrigin(decoy.GetOrigin())
+			player.SetAngles(decoy.GetAngles())
+			player.SetVelocity(decoy.GetVelocity())
+			CancelPhaseShift( player )
+			player.DeployWeapon()
+			player.SetPredictionEnabled( true )
+			player.ClearParent()
+			ViewConeFree( player )
+			if( decoyData.forceCrouch )
+				thread HoloRewindForceCrouch( player ) // this will handle "UnforceCrouch()"
+		}
+
+		if ( IsValid( mover ) )
+			mover.Destroy()
+
+		if ( IsValid( decoy ) )
+			CleanupExistingDecoy(decoy)
 	})
 
 	vector initial_origin = player.GetOrigin()
@@ -449,6 +467,8 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	ViewConeZero( player )
 	player.HolsterWeapon()
 	player.SetPredictionEnabled( false )
+	if( decoyData.forceCrouch )
+		player.ForceCrouch() // avoid stucking!
 	PhaseShift( player, 0.0, 7 * PHASE_REWIND_PATH_SNAPSHOT_INTERVAL * 1.5 )
 
 	for ( float i = 7; i > 0; i-- )
@@ -463,5 +483,14 @@ void function PlayerUsesHoloRewindThreaded( entity player, entity decoy )
 	mover.NonPhysicsMoveTo( decoy.GetOrigin(), PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 	mover.NonPhysicsRotateTo( decoy.GetAngles(), PHASE_REWIND_PATH_SNAPSHOT_INTERVAL, 0, 0 )
 	player.SetVelocity( decoy.GetVelocity() )
+}
+
+void function HoloRewindForceCrouch( entity player )
+{
+	// make player crouch
+	player.ForceCrouch()
+	wait 0.2 // magic number, player must be completely crouched to avoid auto-stand
+	if( IsValid( player ) )
+		player.UnforceCrouch()
 }
 #endif
