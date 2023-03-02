@@ -1,7 +1,7 @@
 {
   "Name": "Legonzaur.HoloShift",
-  "Description": "Swap positions with your beloved decoy",
-  "Version": "1.0.8",
+  "Description": "Swap positions with your beloved decoy. Compatible with HoloTracker.",
+  "Version": "1.0.9",
   "LoadPriority": 2,
   "Scripts": [
     {
@@ -9,7 +9,14 @@
       "RunOn": "MP",
       "ServerCallback": {
         "After": "HoloShift_Init"
-      }
-    }
+      },
+    },
+	{
+	"Path": "HolopilotIconChange.nut",
+		"RunOn": "MP",
+		"ServerCallback": {
+			"After": "HolopilotIconChangeInit"
+		},
+	}
   ]
 }
