@@ -46,6 +46,10 @@ void function CleanupExistingDecoy( entity decoy )
 {
 	if ( IsValid( decoy ) ) //This cleanup function is called from multiple places, so check that decoy is still valid before we try to clean it up again
 	{
+		//COMMUNICATION WITH HOLOTRACKER
+		int eHandle = decoy.GetEncodedEHandle()
+		ServerToClientStringCommand( decoy.GetBossPlayer(), "StopDecoyTracking " + eHandle.tostring())
+		//END OF COMMUNICATION
 		decoy.Decoy_Dissolve()
 		CleanupFXAndSoundsForDecoy( decoy )
 	}
@@ -158,6 +162,11 @@ var function OnWeaponPrimaryAttack_holopilot( entity weapon, WeaponPrimaryAttack
 	}else{
 		entity decoy = CreateHoloPilotDecoys( weaponOwner, 1 )
 		playerDecoyList[ weaponOwner ] <- decoy
+		
+		//COMMUNICATION WITH HOLOTRACKER
+		int eHandle = decoy.GetEncodedEHandle()
+		ServerToClientStringCommand( weaponOwner, "ActivateDecoyTracking " + eHandle.tostring())
+		//END OF COMMUNICATION
 	}
 #else
 	Rumble_Play( "rumble_holopilot_activate", {} )

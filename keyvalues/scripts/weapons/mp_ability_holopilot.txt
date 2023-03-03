@@ -32,5 +32,9 @@ WeaponData
 			"ammo_stockpile_max"							"300"
 			"regen_ammo_refill_rate"						"*1.5"
 		}
+		mode_holoshift
+		{
+			"hud_icon"							"rui/menu/boosts/boost_icon_holopilot"
+		}
 	}
 }
